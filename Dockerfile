@@ -1,15 +1,3 @@
-# Multi-stage build for production
-FROM node:18-alpine AS builder
-
-WORKDIR /app
-
-# Copy package files
-COPY package*.json ./
-
-# Install all dependencies (including devDependencies for building)
-RUN npm ci --only=production --silent
-
-# Production stage
 FROM node:18-alpine AS production
 
 # Create non-root user
@@ -22,7 +10,7 @@ WORKDIR /app
 COPY package*.json ./
 
 # Install only production dependencies
-RUN npm ci --only=production --silent && npm cache clean --force
+RUN npm install --only=production --silent && npm cache clean --force
 
 # Copy application code
 COPY --chown=nodejs:nodejs . .
